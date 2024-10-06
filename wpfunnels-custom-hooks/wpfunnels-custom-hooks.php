@@ -6,7 +6,7 @@ Version: 1.0
 Author: asq
 */
 
-// Custom Table Creation on Plugin Activation
+// Custom Table Creation when Plugin Activates
 function create_customer_data_table() {
     global $wpdb;
     $tableName = $wpdb->prefix . 'customer_data';
@@ -26,7 +26,7 @@ function create_customer_data_table() {
 }
 register_activation_hook( __FILE__, 'create_customer_data_table' );
 
-// Function to Store Customer Data After Checkout
+// Function where Customer Data After Checkout is stored
 function store_customer_details( $order_id ) {
     $order = wc_get_order( $order_id );
     $customerName = $order->get_billing_first_name() . ' ' . $order->get_billing_last_name();
@@ -48,7 +48,7 @@ function store_customer_details( $order_id ) {
         )
     );
 
-    // Check if 100 customers are stored and trigger email
+    // Check 100 Customers  and send email
     check_and_send_emails();
 }
 add_action( 'woocommerce_thankyou', 'store_customer_details' );
@@ -65,12 +65,12 @@ function check_and_send_emails() {
             send_thank_you_email( $customer['email'], $customer['name'], $customer['order_id'] );
         }
 
-        // Delete customers after sending emails
+        // Delete all the customers after sending emails
         $wpdb->query( "DELETE FROM $tableName LIMIT 100" );
     }
 }
 
-// Function to Send Thank You Email
+// Function for Thank You Email
 function send_thank_you_email( $email, $name, $order_id ) {
     $subject = 'Thank you for your purchase!';
     $body = "Dear $name,\n\nThank you for your recent purchase from Fitness Instructor! We’re excited to have you as a customer and we’re confident you’ll love your new fitness guide.\n\nBest regards,\nFitness Instructor";
